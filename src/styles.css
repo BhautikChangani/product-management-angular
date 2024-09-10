@@ -1,1 +1,58 @@
-/* You can add global styles to this file, and also import other style files */
+.text-purple {
+    color: purple;
+}
+
+.bg-purple {
+    background-color: purple;
+}
+
+.btn-purple {
+    background-color: purple;
+    color: white;
+}
+
+.btn-outline-purple {
+    color: purple;
+    border-color: purple;
+}
+
+.btn-outline-purple :hover {
+    background-color: purple;
+    color: white;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.cdk-overlay-pane {
+    background-color: transparent;
+}
+
+  .mdc-snackbar {
+    position: absolute;
+    top: 50px;
+    right: 40px;
+  }
+
+  .snack-bar-success {
+    background-color: #4caf50; 
+    color: white;
+  }
+  
+  .snack-bar-error {
+    background-color: #f44336; 
+    color: white;
+  }
+  
+  .snack-bar-info {
+    background-color: #2196f3; 
+    color: white;
+  }
+  
+  .snack-bar-warning {
+    background-color: #ff9800; 
+    color: white;
+  }
+
+  .mat-mdc-snackbar-surface {
+    background-color: transparent !important;
+  }

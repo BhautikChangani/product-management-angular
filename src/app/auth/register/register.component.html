@@ -1,0 +1,81 @@
+<div class="container vh-90">
+    <div class="d-flex flex-column w-100 h-100 justify-content-center align-items-center">
+        <div class="d-flex w-100 justify-content-between align-items-center">
+            <div class="text-black fs-1 ">Sign Up</div>
+            <button routerLink="/" routerLinkActive="router-link-active" class="btn btn-purple">Home</button>
+        </div>
+        <form #userForm="ngForm" (ngSubmit)="SubmitForm(userForm)" class="w-100">
+            <div class="row mt-2 d-flex">
+                <div class="mb-3 col-md-6">
+                    <label for="firstName" class="form-label">First name</label>
+                    <input type="text" [(ngModel)]="user.firstName" name="firstName" #firstName="ngModel" class="form-control"
+                    [ngClass]="{ 'is-invalid': isSubmit && firstName.invalid }" id="firstName"
+                        aria-describedby="Enter First name" placeholder="Enter First name" required>
+                    <div *ngIf="isSubmit && firstName.invalid" class="invalid-feedback">
+                        <div *ngIf="firstName.errors?.['required']">First name is required</div>
+                    </div>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="lastName" class="form-label">Last name</label>
+                    <input type="text" [(ngModel)]="user.lastName" name="lastName" #lastName="ngModel" class="form-control"
+                    [ngClass]="{ 'is-invalid': isSubmit && lastName.invalid }" id="lastName"
+                        aria-describedby="Enter Last name" placeholder="Enter Last name" required>
+                    <div *ngIf="isSubmit && lastName.invalid" class="invalid-feedback">
+                        <div *ngIf="lastName.errors?.['required']" >Last name is required</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2 d-flex">
+                <div class="mb-3 col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" [(ngModel)]="user.email" name="email" #email="ngModel"
+                    [ngClass]="{ 'is-invalid': isSubmit && email.invalid }" class="form-control"
+                        id="email" aria-describedby="email" placeholder="Enter email" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$">
+                        <div *ngIf="isSubmit && email.invalid" class="invalid-feedback">
+                            <div *ngIf="email.errors?.['required']">Email is required</div>
+                            <div *ngIf="email.errors?.['pattern']">Email is invalid</div>
+                        </div>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="contactNumber" class="form-label">Contact number</label>
+                    <input type="number" [(ngModel)]="user.contactNumber" name="contactNumber" #contactNumber="ngModel"
+                    [ngClass]="{ 'is-invalid': isSubmit && contactNumber.invalid }" class="form-control"
+                        id="age" placeholder="Enter Contact number" required pattern="^\d{10}$">
+                        <div *ngIf="isSubmit && contactNumber.invalid" class="invalid-feedback">
+                            <div *ngIf="contactNumber.errors?.['required']">Contact no. is required</div>
+                            <div *ngIf="contactNumber.errors?.['pattern']">Contact no. is invalid</div>
+                        </div>
+                </div>
+            </div>
+            <div class="row mt-2 d-flex">
+                <div class="mb-3 col-md-6">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" [(ngModel)]="user.password" name="password" #password="ngModel"
+                    [ngClass]="{ 'is-invalid': isSubmit && password.invalid }" class="form-control"
+                        id="password" aria-describedby="password" placeholder="Enter password" required minlength="8" maxlength="15">
+                    <div *ngIf="isSubmit && password.invalid" class="invalid-feedback">
+                        <div *ngIf="password.errors?.['required']">Password is required</div>
+                        <div *ngIf="password.errors?.['minlength']">Password should be at least 8 letters long</div>
+                        <div *ngIf="password.errors?.['maxLength']">Password can not be more than 15 letters</div>
+                    </div>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="confirmPassword" class="form-label">Confirm password</label>
+                    <input type="password" [(ngModel)]="user.confirmPassword" name="confirmPassword" #confirmPassword="ngModel"
+                    [ngClass]="{ 'is-invalid': isSubmit && confirmPassword.invalid }" class="form-control"
+                        id="confirmPassword" placeholder="Enter confirm password" required minlength="8" maxlength="15" >
+                        <div *ngIf="isSubmit && (confirmPassword.invalid || !passwordsMatch)" class="invalid-feedback">
+                            <div *ngIf="confirmPassword.errors?.['required']">Confirm password is required</div>
+                            <div *ngIf="confirmPassword.errors?.['minlength']">Confirm password should be at least 8 letters long</div>
+                            <div *ngIf="confirmPassword.errors?.['maxLength']">Confirm password can not be more than 15 letters</div>
+                        </div>
+                </div>
+            </div>
+
+            <div class="mt-2 d-flex gap-2 justify-content-end">
+                <button type="submit" class="btn d-flex btn-purple">Submit</button>
+                <button type="reset" class="btn d-flex btn-outline-purple">Reset</button>
+            </div>
+        </form>
+    </div>
+</div>
