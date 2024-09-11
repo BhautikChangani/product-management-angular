@@ -1,4 +1,7 @@
 <div class="bg-purple text-white p-3 d-flex justify-content-between">
     <span class="nav-heading">Product management system</span>
+    <div class="d-flex gap-2 align-items-center">
+        <div *ngIf="isLoggedIn">{{name}}</div>
+        <button *ngIf="isLoggedIn" (click)="Logout()" class="btn text-purple bg-white">Logout</button>
+    </div>
 </div>
-<router-outlet></router-outlet>

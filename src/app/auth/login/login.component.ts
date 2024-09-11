@@ -25,7 +25,7 @@ export class LoginComponent {
         this.service.SetToken(response.token);
         this.toasterService.showSuccessMessage(response.message);
         console.log(this.service.GetToken());
-        this.router.navigate(['../register']);
+        this.router.navigate(['/dashboard']);
       }, 
       (error) => {
         this.toasterService.showErrorMessage(error.error.message);

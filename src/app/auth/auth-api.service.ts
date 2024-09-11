@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { jwtDecode } from 'jwt-decode';
 
 export interface Response {
   message?: string;
@@ -61,5 +62,19 @@ export class AuthApiService {
         return false;
       }
       return !this.jwtHelper.isTokenExpired(token);
+  }
+
+  GetName(token : string) : string{
+    try {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken.name;
+    } catch (error) {
+      console.error('Error decoding token', error);
+      return "fail";
+    }
+  }
+
+  Logout(){
+    localStorage.removeItem('token');
   }
 }
