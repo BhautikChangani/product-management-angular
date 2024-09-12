@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { jwtDecode } from 'jwt-decode';
 
@@ -37,8 +37,18 @@ export interface UserInfo {
 export class AuthApiService {
 
   private jwtHelper = new JwtHelperService();
-  readonly apiUrl = "https://localhost:7037/User"
+  readonly apiUrl = "https://localhost:7037/User";
+  private tokenSubject = new BehaviorSubject<string | null>(this.getTokenFromLocalStorage());
+  token = this.tokenSubject.asObservable();
   constructor(private http: HttpClient) { }
+
+  private getTokenFromLocalStorage(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  isLoggedIn(): boolean {
+    return this.tokenSubject.value !== null;
+  }
 
   RegisterUser(user: User): Observable<any> {
     return this.http.post<Response>(this.apiUrl + '/CreateUser', user);
@@ -50,6 +60,7 @@ export class AuthApiService {
 
   SetToken(token : string){
     localStorage.setItem('token', token);
+    this.tokenSubject.next(token);
   }
 
   GetToken() : string | null {
@@ -76,5 +87,6 @@ export class AuthApiService {
 
   Logout(){
     localStorage.removeItem('token');
+    this.tokenSubject.next(null);
   }
 }

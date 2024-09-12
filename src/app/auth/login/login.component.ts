@@ -28,7 +28,7 @@ export class LoginComponent {
         this.router.navigate(['/dashboard']);
       }, 
       (error) => {
-        this.toasterService.showErrorMessage(error.error.message);
+        this.toasterService.showErrorMessage(error.error.message ?? "Something went wrong");
       }
     )
   }

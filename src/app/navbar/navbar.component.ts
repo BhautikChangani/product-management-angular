@@ -13,11 +13,11 @@ export class NavbarComponent {
   constructor(private service : AuthApiService, private router : Router){}
 
   ngOnInit(): void {
-    const token = this.service.GetToken();
-    if(token) {
-      this.isLoggedIn = true;
+    this.service.token.subscribe(token => {
+      this.isLoggedIn = !!token;
+      if(token)
       this.name = this.service.GetName(token);
-    }
+    });
   }
 
   Logout(){

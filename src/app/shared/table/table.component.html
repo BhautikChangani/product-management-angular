@@ -1,0 +1,18 @@
+<table mat-table [dataSource]="data" class="mat-elevation-z8">
+    <ng-container *ngFor="let column of columns" [matColumnDef]="column">
+      <th mat-header-cell *matHeaderCellDef> {{ column | titlecase }} </th>
+      <td mat-cell *matCellDef="let element">
+        <ng-container *ngIf="column === 'actions'; else dataContent">
+          <button (click)="editElement(element.id)" mat-flat-button >Edit</button>
+          <button (click)="deleteElement(element.id)" mat-button >Delete</button>
+        </ng-container>
+        <ng-template #dataContent>
+          {{ element[column] }}
+        </ng-template>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+  
+  </table>
+  
