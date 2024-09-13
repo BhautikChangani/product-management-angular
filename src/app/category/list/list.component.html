@@ -1,1 +1,1 @@
-<app-table *ngIf="data.length > 0" (EditData)="onEditData($event)" (DeleteData)="onDeleteData($event)" [columns] = "columns" [data]="data"></app-table>
+<app-table *ngIf="tableConfig.data" (EditData)="onEditData($event)" (DeleteData)="onDeleteData($event)" (AddData)="onAddData()" [tableConfig]="tableConfig" (UpdateConfig)="onUpdateConfig($event)"></app-table>

@@ -41,7 +41,7 @@ export class AddEditComponent {
     if (this.type === 'Add') {
       this.service.AddCategory(this.category).subscribe((response: Response) => {
         this.toasterService.showSuccessMessage(response.message ?? "");
-        this.router.navigate(['../list']);
+        this.router.navigate(['../list'], {relativeTo : this.route});
       },
       (error) => {
         this.toasterService.showErrorMessage(error.error.message ?? "");

@@ -8,7 +8,7 @@ export interface Filter {
   rowCount? : number,
   searchString? : string,
   orderDetail : OrderDetail,
-  columnConfiguration : ColumnConfiguration[]
+  columnConfigurations : ColumnConfiguration[]
 }
 
 
