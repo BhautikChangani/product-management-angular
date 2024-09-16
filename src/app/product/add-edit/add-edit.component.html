@@ -1,0 +1,132 @@
+<div class="container vh-90">
+    <div class="d-flex flex-column w-100 h-100 justify-content-center align-items-center">
+        <div class="d-flex w-50 justify-content-between align-items-center">
+            <div *ngIf="type === 'Add'" class="text-black fs-1">Add Product</div>
+            <div *ngIf="type === 'Update'" class="text-black fs-1">Update Product</div>
+            <button (click)="BackToProductList()" routerLinkActive="router-link-active" class="btn btn-purple">Back
+                to List</button>
+        </div>
+        <form #productForm="ngForm" (ngSubmit)="SubmitForm(productForm)" novalidate class="w-100">
+            <div class="row mt-2 ">
+                <div class="mb-3 col-md-6">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select"  [ngClass]="{ 'is-invalid': isSubmit && selectedCategory.invalid }" [(ngModel)]="product.selectedCategory" #selectedCategory="ngModel"
+                    name="selectedCategory" id="category" required>
+                    <option value="">Select category</option>
+                        <option *ngFor="let category of categories" [value]="category.id">
+                            {{ category.categoryName }}
+                        </option>
+                    </select>
+                    <div *ngIf="isSubmit && selectedCategory.invalid" class="invalid-feedback">
+                        <div *ngIf="selectedCategory.errors?.['required']">Category is required</div>
+                    </div>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="productName" class="form-label">Product name</label>
+                    <input type="text" [(ngModel)]="product.productName" [ngClass]="{ 'is-invalid': isSubmit && productName.invalid }" name="productName" #productName="ngModel"
+                        class="form-control" id="productName" placeholder="Enter product name" required>
+                        <div *ngIf="isSubmit && productName.invalid" class="invalid-feedback">
+                            <div *ngIf="productName.errors?.['required']">Product name is required</div>
+                        </div>
+                </div>
+            </div>
+
+            <div class="row mt-2 ">
+                <div class="mb-3 col-md-6">
+                    <label for="orderDate" class="form-label">Order date</label>
+                    <input type="date" [ngClass]="{ 'is-invalid': isSubmit && orderDate.invalid }" [(ngModel)]="product.orderDate" name="orderDate" #orderDate="ngModel"
+                        class="form-control" id="orderDate" placeholder="Enter order date" required>
+                        <div *ngIf="isSubmit && orderDate.invalid" class="invalid-feedback">
+                            <div *ngIf="orderDate.errors?.['required']">Order date is required</div>
+                        </div>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="serialNumber" class="form-label">Serial number</label>
+                    <input type="text" [(ngModel)]="product.serialNumber" name="serialNumber" #serialNumber="ngModel"
+                        class="form-control" [ngClass]="{ 'is-invalid': isSubmit && serialNumber.invalid }" id="serialNumber" placeholder="Enter serial number" required pattern="^\d{6}$">
+                        <div *ngIf="isSubmit && serialNumber.invalid" class="invalid-feedback">
+                            <div *ngIf="serialNumber.errors?.['required']">Serial no. is required</div>
+                            <div *ngIf="serialNumber.errors?.['pattern']">Serial no. is invalid</div>
+                        </div>
+                </div>
+            </div>
+
+            <div class="row mt-2 d-flex align-items-center ">
+                <div class="mb-3 col-md-6">
+                    <label for="supplierEmail" class="form-label">Supplier email</label>
+                    <input type="text" [(ngModel)]="product.supplierEmail" name="supplierEmail" #supplierEmail="ngModel"
+                        class="form-control" [ngClass]="{ 'is-invalid': isSubmit && supplierEmail.invalid }" id="supplierEmail" placeholder="Enter supplier email" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$">
+                        <div *ngIf="isSubmit && supplierEmail.invalid" class="invalid-feedback">
+                            <div *ngIf="supplierEmail.errors?.['required']">Email is required</div>
+                            <div *ngIf="supplierEmail.errors?.['pattern']">Email is invalid</div>
+                        </div>
+                    </div>
+                <div class="mb-3 col-md-6">
+                    <label for="productSize" class="form-label">Product size</label>
+                    <div class="d-flex flex-row gap-2 mb-2 align-items-center">
+                        <div class="form-check">
+                            <input class="form-check-input defaultError" [(ngModel)]="product.productSize"
+                                 required type="radio" [ngClass]="{ 'is-invalid': isSubmit && productSize.invalid }" #productSize="ngModel" [checked]="product.productSize === 1" name="productSize" 
+                                value="1">
+                            <label class="form-check-label" for="sizeSmall">
+                                Small
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input defaultError" [(ngModel)]="product.productSize"
+                            required type="radio" [ngClass]="{ 'is-invalid': isSubmit && productSize.invalid }" #productSize="ngModel" [checked]="product.productSize === 2" name="productSize" id="sizeMedium"
+                            value="2">
+                            <label class="form-check-label" for="sizeMedium">
+                                Medium
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input defaultError" [(ngModel)]="product.productSize"
+                            required type="radio" [ngClass]="{ 'is-invalid': isSubmit && productSize.invalid }" #productSize="ngModel" [checked]="product.productSize === 3" name="productSize" id="sizeLarge"
+                            value="3">
+                            <label class="form-check-label" for="sizeLarge">
+                                Large
+                            </label>
+                        </div>
+                        <div *ngIf="isSubmit && productSize.invalid" class="invalid-feedback">
+                            <div *ngIf="productSize.errors?.['required']">Product size is required</div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="row mt-2 ">
+                <div class="mb-3 col-md-6">
+                    <label for="productDescription" class="form-label">Description</label>
+                    <textarea type="date" [(ngModel)]="product.productDescription" name="productDescription"
+                        #productDescription="ngModel" class="form-control" [ngClass]="{ 'is-invalid': isSubmit && productDescription.invalid }" id="productDescription"
+                        placeholder="Enter description" required></textarea>
+                        <div *ngIf="isSubmit && productDescription.invalid" class="invalid-feedback">
+                            <div *ngIf="productDescription.errors?.['required']">Product description is required</div>
+                        </div>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <div class="d-flex flex-column">
+                        <label for="serialNumber" class="form-label">Availability :</label>
+                        <input class="form-check-input" [(ngModel)]="product.isAvailable" name="isAvailable"
+                            type="checkbox" value="1" id="isAvailable" #isAvailable="ngModel">
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2 ">
+                <div class="mb-3 col-md-6">
+                    <label for="file" class="form-label">Product Image</label>
+                    <input class="form-control defaultError" [(ngModel)]="product.file" #file="ngModel" asp-for="File"
+                        type="file" name="file" id="file">
+                </div>
+                <div class="mb-3 col-md-6 d-flex align-items-end">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn d-flex btn-purple">Submit</button>
+                        <button type="reset" class="btn d-flex btn-outline-purple">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

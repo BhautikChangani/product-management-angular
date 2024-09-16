@@ -11,7 +11,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
-
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,8 @@ import { FormsModule } from '@angular/forms';
     MatButton,
     FormsModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatMenuModule
   ],
   exports : [TableComponent]
 })

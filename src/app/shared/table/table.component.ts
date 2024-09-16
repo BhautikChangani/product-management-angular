@@ -24,6 +24,8 @@ export class TableComponent {
   searchableColumns: { [key: string]: boolean } = {};
   filterValues: { [key: string]: string } = {};
   filtersVisible: { [key: string]: boolean } = {};
+  filterString: string = '';
+  currentFilterColumn: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -102,14 +104,36 @@ export class TableComponent {
 
   toggleFilter(column: string) {
     this.filtersVisible[column] = !this.filtersVisible[column];
+    if (this.filtersVisible[column]) {
+      this.currentFilterColumn = column;
+    }
   }
 
-  applyFilter(column: string){
-    this.toggleFilter(column);
+  applyFilter() {
+    if (this.currentFilterColumn) {
+      console.log(`Column: ${this.currentFilterColumn}, Filter Value: ${this.filterString}`);
+
+      const columnConfig = this.filter.columnConfigurations.find(col => col.columnNameInCamle === this.currentFilterColumn);
+      if (columnConfig) {
+        columnConfig.searchValue = this.filterString;
+      }
+
+      this.filterValues[this.currentFilterColumn] = this.filterString;
+
+      this.UpdateConfig.emit(this.filter);
+
+      this.toggleFilter(this.currentFilterColumn);
+    }
   }
 
-  clearFilter(column: string) {
-    this.toggleFilter(column);
+  clearFilter() {
+    if (this.currentFilterColumn) {
+      this.filterValues[this.currentFilterColumn] = '';
+      this.filterString = '';
+      this.filter.searchString = '';
+      this.UpdateConfig.emit(this.filter);
+      this.toggleFilter(this.currentFilterColumn);
+    }
   }
 
   

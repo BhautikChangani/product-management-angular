@@ -18,17 +18,17 @@ export interface User {
 }
 
 export interface LoginUser {
-  email : string,
-  password : string
+  email: string,
+  password: string
 }
 
 export interface UserInfo {
-  id : number,
-  name : string,
-  token : string,
-  email : string,
-  isLogin : boolean,
-  message : string
+  id: number,
+  name: string,
+  token: string,
+  email: string,
+  isLogin: boolean,
+  message: string
 }
 
 @Injectable({
@@ -58,34 +58,42 @@ export class AuthApiService {
     return this.http.post<UserInfo>(this.apiUrl + '/LoginUser', user);
   }
 
-  SetToken(token : string){
+  SetToken(token: string) {
     localStorage.setItem('token', token);
     this.tokenSubject.next(token);
   }
 
-  GetToken() : string | null {
+  GetToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  IsAuthenticated() : boolean{
-      const token = localStorage.getItem('token');
-      if (!token) {
-        return false;
-      }
-      return !this.jwtHelper.isTokenExpired(token);
+  IsAuthenticated(): boolean {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return false;
+    }
+    return this.isValidToken(token);
   }
 
-  GetName(token : string) : string{
-    try {
+  GetName(token: string): string {
+    if (this.isValidToken(token)) {
       const decodedToken: any = jwtDecode(token);
       return decodedToken.name;
-    } catch (error) {
-      console.error('Error decoding token', error);
-      return "fail";
+    } else {
+      return '';
     }
   }
 
-  Logout(){
+  isValidToken(token: string): boolean {
+    try {
+      return !this.jwtHelper.isTokenExpired(token);
+    } catch (error) {
+      this.Logout();
+      return false;
+    }
+  }
+
+  Logout() {
     localStorage.removeItem('token');
     this.tokenSubject.next(null);
   }
