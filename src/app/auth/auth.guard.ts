@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot, CanActivate, CanActivateFn, GuardResult, MaybeAsync, Router, RouterStateSnapshot } from '@angular/router';
-import { AuthApiService } from './auth-api.service';
 import { Injectable } from '@angular/core';
+import { AuthService } from './services/auth.service';
 
 
 @Injectable({
@@ -9,11 +9,11 @@ import { Injectable } from '@angular/core';
 
 export class AuthGuard implements CanActivate {
 
-  constructor(private authService: AuthApiService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) { }
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (this.authService.IsAuthenticated()) {
       if (this.isPublicRoute(state.url)) {
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/product']);
         return false;
       }
       return true;

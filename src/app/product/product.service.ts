@@ -1,27 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Filter, Pagination } from '../category/category.service';
+import { Filter, Pagination, Product } from '../core/model';
 
-
-export interface Product {
-  productId?: number,
-  selectedCategory?: number | string,
-  productName?: string,
-  productDescription?: string,
-  isAvailable?: number | boolean,
-  productSize?: number | string,
-  serialNumber?: number,
-  orderDate?: Date,
-  supplierEmail?: string,
-  file?: File,
-  imagePath?: string
-}
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  readonly apiUrl = "https://localhost:7037/Product"
+  readonly apiUrl : string = 'https://localhost:7037/Product';
   constructor(private http: HttpClient) { }
 
   FetchData(filters: Filter): Observable<any> {
@@ -29,18 +15,34 @@ export class ProductService {
   }
 
   GetProductById(id: number): Observable<any> {
-    return this.http.get<Product>(`${this.apiUrl}/GetProduct?productId=${id}`)
+    return this.http.get<Product>(`${this.apiUrl}/GetProduct?productId=${id}`);
   }
 
   AddProduct(product: Product): Observable<any> {
-    return this.http.post<Response>(`${this.apiUrl}/CreateProduct`, product)
+    return this.http.post<Response>(`${this.apiUrl}/CreateProduct`, product);
   }
 
   EditProduct(product: Product): Observable<any> {
-    return this.http.post<Response>(`${this.apiUrl}/EditProduct`, product)
+    return this.http.post<Response>(`${this.apiUrl}/EditProduct`, product);
   }
 
   DeleteProduct(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/DeleteProduct?productId=${id}`)
+    return this.http.delete(`${this.apiUrl}/DeleteProduct?productId=${id}`);
+  }
+
+  DeleteProductImage(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/RemoveProductImage?productid=${id}`);
+  }
+
+  UploadProductFile(productId: number, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('productId', productId.toString());
+
+    return this.http.post<Response>(`${this.apiUrl}/UploadProductFile`, formData);
+  }
+
+  DownloadProductImage(productId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/DownloadProductImage?productid=${productId}`);
   }
 }

@@ -30,6 +30,6 @@ import { MatMenuModule } from '@angular/material/menu';
     MatButtonModule,
     MatMenuModule
   ],
-  exports : [TableComponent]
+  exports: [TableComponent]
 })
 export class SharedModule { }

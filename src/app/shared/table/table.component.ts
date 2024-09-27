@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { Filter, Pagination } from '../../category/category.service';
-import { MatPaginator } from '@angular/material/paginator';
-import { PageEvent } from '@angular/material/paginator';
+import { Filter, Pagination } from '../../core/model';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-table',
@@ -10,31 +9,39 @@ import { PageEvent } from '@angular/material/paginator';
 })
 export class TableComponent {
 
-  @Input() tableConfig! : Pagination;
+  @Input() tableConfig!: Pagination;
   @Output() EditData = new EventEmitter<number>();
   @Output() DeleteData = new EventEmitter<number>();
   @Output() AddData = new EventEmitter();
   @Output() UpdateConfig = new EventEmitter<Filter>();
-  filter : Filter = {} as Filter;
-  data : any[] = [];
-  totalItem : number = 0;
-  pageSize : number = 2;
-  searchString : string = '';
-  columns : string[] = [];
+  filter: Filter = {
+    activePage: 0,
+    rowCount: 2,
+    searchString: ''
+  };
+  data: any[] = [];
+  totalItem: number = 0;
+  pageSize: number = 2;
+  searchString: string = '';
+  columns: string[] = [];
   searchableColumns: { [key: string]: boolean } = {};
-  filterValues: { [key: string]: string } = {};
-  filtersVisible: { [key: string]: boolean } = {};
-  filterString: string = '';
-  currentFilterColumn: string = '';
+  selectedColumn: string | null = null;
+  currentFilterValue: string = '';
+  filterApplied: { [key: string]: boolean } = {};
+
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
-    this.data = this.tableConfig.data;
+    if (this.tableConfig.data) {
+      this.data = this.tableConfig.data;
+    }
     this.totalItem = this.tableConfig.totalItem;
     this.pageSize = this.tableConfig.rowCount || 2;
     this.filter.columnConfigurations = this.tableConfig.columnData;
-    this.setColumns(this.tableConfig.columnData);
+    if (this.tableConfig.columnData) {
+      this.setColumns(this.tableConfig.columnData);
+    }
   }
 
   ngAfterViewInit(): void {
@@ -47,11 +54,13 @@ export class TableComponent {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['tableConfig'] && this.tableConfig) {
-      this.data = this.tableConfig.data;
+      if (this.tableConfig.data) {
+        this.data = this.tableConfig.data;
+      }
       this.totalItem = this.tableConfig.totalItem;
       this.pageSize = this.tableConfig.rowCount || 2;
       this.filter.columnConfigurations = this.tableConfig.columnData;
-      
+
       if (this.paginator) {
         this.paginator.pageIndex = this.tableConfig.activePage || 0;
         this.paginator.pageSize = this.tableConfig.rowCount || 2;
@@ -59,82 +68,84 @@ export class TableComponent {
     }
   }
 
+  getColumnDisplayName(column: string): string | undefined {
+    const columnConfig = this.filter.columnConfigurations?.find(col => col.columnNameInCamle === column || col.enumString === column);
+    return columnConfig ? columnConfig.columnNameDisplay : column;
+  }
+
   private setColumns(columnData: any[]): void {
-    console.log(columnData);
     this.columns = columnData.filter(col => !col.isExpandable).map(col => {
-      if(col.dataType == "Enum"){
-        return col.enumString
+      if (col.dataType === 'Enum') {
+        return col.enumString;
       }
-      return col.columnNameInCamle
+      return col.columnNameInCamle;
     });
+
     if (!this.columns.includes('actions')) {
       this.columns.push('actions');
     }
-    
+
     this.searchableColumns = columnData.reduce((searchableCol, col) => {
       if (col.searchable) {
         searchableCol[col.columnNameInCamle] = true;
       }
       return searchableCol;
     }, {} as { [key: string]: boolean });
-    
   }
 
-  onPageChange(event: PageEvent) {
+
+  onPageChange(event: PageEvent): void {
     this.filter.activePage = event.pageIndex;
     this.filter.rowCount = event.pageSize;
     this.UpdateConfig.emit(this.filter);
   }
 
-  editElement(id : number){
+  onEdit(id: number): void {
     this.EditData.emit(id);
   }
-  deleteElement(id : number){
+  onDelete(id: number): void {
     this.DeleteData.emit(id);
   }
 
-  addElement() {
+  onAdd(): void {
     this.AddData.emit();
   }
 
-  onSearchChange(searchValue: string) {
+  onSearchChange(searchValue: string): void {
     this.filter.searchString = searchValue;
     this.UpdateConfig.emit(this.filter);
   }
 
-  toggleFilter(column: string) {
-    this.filtersVisible[column] = !this.filtersVisible[column];
-    if (this.filtersVisible[column]) {
-      this.currentFilterColumn = column;
-    }
+  selectColumnForFilter(column: string): void {
+    this.selectedColumn = column;
+    const columnConfig = this.filter.columnConfigurations?.find(col => col.columnNameInCamle === column);
+    this.currentFilterValue = columnConfig?.searchValue || '';
   }
 
-  applyFilter() {
-    if (this.currentFilterColumn) {
-      console.log(`Column: ${this.currentFilterColumn}, Filter Value: ${this.filterString}`);
-
-      const columnConfig = this.filter.columnConfigurations.find(col => col.columnNameInCamle === this.currentFilterColumn);
+  applyFilter(): void {
+    if (this.selectedColumn) {
+      const columnConfig = this.filter.columnConfigurations?.find(col => col.columnNameInCamle === this.selectedColumn);
       if (columnConfig) {
-        columnConfig.searchValue = this.filterString;
+        columnConfig.searchValue = this.currentFilterValue;
+      } else {
+        this.filter.columnConfigurations?.push({ columnNameInCamle: this.selectedColumn, searchValue: this.currentFilterValue });
       }
-
-      this.filterValues[this.currentFilterColumn] = this.filterString;
-
+      this.filterApplied[this.selectedColumn] = true;
       this.UpdateConfig.emit(this.filter);
-
-      this.toggleFilter(this.currentFilterColumn);
     }
   }
 
-  clearFilter() {
-    if (this.currentFilterColumn) {
-      this.filterValues[this.currentFilterColumn] = '';
-      this.filterString = '';
-      this.filter.searchString = '';
+  clearFilter(): void {
+    if (this.selectedColumn) {
+      this.currentFilterValue = '';
+      const columnConfig = this.filter.columnConfigurations?.find(col => col.columnNameInCamle === this.selectedColumn);
+      if (columnConfig) {
+        columnConfig.searchValue = '';
+      }
+      this.filterApplied[this.selectedColumn] = false;
       this.UpdateConfig.emit(this.filter);
-      this.toggleFilter(this.currentFilterColumn);
     }
   }
 
-  
+
 }

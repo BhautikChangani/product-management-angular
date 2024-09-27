@@ -1,0 +1,2 @@
+<app-table *ngIf="tableConfig.data" (EditData)="onEdit($event)" (DeleteData)="onDelete($event)"
+    (AddData)="onAdd()" [tableConfig]="tableConfig" (UpdateConfig)="onUpdateConfig($event)"></app-table>

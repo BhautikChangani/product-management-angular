@@ -1,12 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ListComponent } from './list/list.component';
-import { AddEditComponent } from './add-edit/add-edit.component';
+import { CategoryListComponent } from './category-list/category-list.component';
+import { CategoryDetailComponent } from './category-detail/category-detail.component';
+import { CategoryResolverService } from './category-resolver.service';
 
 const routes: Routes = [
-  {path:'', redirectTo:'list', pathMatch: 'full'},
-  {path:'list', component:ListComponent},
-  {path:'detail', component:AddEditComponent}
+  { path: '', redirectTo: 'list', pathMatch: 'full' },
+  { path: 'list', component: CategoryListComponent, resolve: {
+    categories: CategoryResolverService
+  } },
+  { path: 'detail', component: CategoryDetailComponent }
 ];
 
 @NgModule({

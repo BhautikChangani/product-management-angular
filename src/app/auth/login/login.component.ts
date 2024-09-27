@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { LoginUser, AuthApiService, UserInfo } from '../auth-api.service';
-import { ToasterService } from '../../toaster.service';
+import { LoginUser, UserInfo } from '../../core/model';
+import { ToasterService } from '../../core/toaster.service';
 import { Router } from '@angular/router';
-
+import { AuthService } from '../services/auth.service';
+import { AuthApiService } from '../services/auth-api.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -12,24 +13,26 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   isSubmit = false;
   passwordsMatch = true;
-  user : LoginUser = {} as LoginUser;
+  user: LoginUser = {
+    email: '',
+    password: ''
+  };
 
-  constructor(private service : AuthApiService, private toasterService : ToasterService, private router : Router) { }
-  SubmitForm(form : NgForm){
+  constructor(private service: AuthService, private apiService: AuthApiService, private toasterService: ToasterService, private router: Router) { }
+  submitForm(form: NgForm) : void {
     this.isSubmit = true;
-    if(form.invalid || !this.passwordsMatch){
+    if (form.invalid || !this.passwordsMatch) {
       return;
     }
-    this.service.LoginUser(this.user).subscribe(
-      (response : UserInfo) => {
+    this.apiService.LoginUser(this.user).subscribe({
+      next : (response : UserInfo) => {
         this.service.SetToken(response.token);
-        this.toasterService.showSuccessMessage(response.message);
-        console.log(this.service.GetToken());
-        this.router.navigate(['/dashboard']);
-      }, 
-      (error) => {
-        this.toasterService.showErrorMessage(error.error.message ?? "Something went wrong");
+        this.toasterService.ShowSuccessMessage(response.message);
+        this.router.navigate(['/product']);
+      },
+      error : (error) => {
+        this.toasterService.ShowErrorMessage(error.error?.message ?? 'Something went wrong');
       }
-    )
+    });
   }
 }

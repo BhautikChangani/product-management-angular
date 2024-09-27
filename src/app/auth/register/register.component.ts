@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { User, AuthApiService } from '../auth-api.service';
+import { AuthApiService } from '../services/auth-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { ToasterService } from '../../toaster.service';
-import { Response } from '../auth-api.service';
+import { ToasterService } from '../../core/toaster.service';
+import { Response, User } from '../../core/model';
 
 
 @Component({
@@ -12,29 +12,36 @@ import { Response } from '../auth-api.service';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  isSubmit = false;
-  passwordsMatch = true;
-  user : User = {} as User;
+  isSubmit : boolean = false;
+  passwordsMatch : boolean = true;
+  user: User = {
+    firstName: '',
+    lastName: '',
+    contactNumber: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  };
   errorMessage: string | undefined;
   successMessage: string | undefined;
 
-  constructor(private router : Router, private route : ActivatedRoute, private service : AuthApiService, private toasterService : ToasterService) { }
+  constructor(private router: Router, private route: ActivatedRoute, private service: AuthApiService, private toasterService: ToasterService) { }
 
-  SubmitForm(form : NgForm) {
+
+  submitForm(form: NgForm) : void {
     this.isSubmit = true;
-    this.passwordsMatch = this.user.password === this.user.confirmPassword;
-    if(form.invalid || !this.passwordsMatch){
+    if (form.invalid) {
       return;
     }
     this.user.contactNumber = this.user.contactNumber.toString();
-    this.service.RegisterUser(this.user).subscribe(
-      (response: Response) => {
-        this.toasterService.showSuccessMessage(response.message ?? "");
+    this.service.RegisterUser(this.user).subscribe({
+      next : (response : Response) => {
+        this.toasterService.ShowSuccessMessage(response.message ?? '');
         this.router.navigate(['../login']);
       },
-      (error) => {
-        this.toasterService.showErrorMessage(error.error.message ?? "");
+      error : (error) => {
+        this.toasterService.ShowErrorMessage(error.error ?? 'Something went wrong');
       }
-    );
+    });
   }
 }

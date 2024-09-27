@@ -1,0 +1,40 @@
+<div class="container vh-90">
+    <div class="d-flex flex-column w-100 h-100 justify-content-center align-items-center">
+        <div class="d-flex w-50 justify-content-between align-items-center">
+            <div *ngIf="type === 'Add'" class="text-black fs-1">Add Category</div>
+            <div *ngIf="type === 'Update'" class="text-black fs-1">Update Category</div>
+            <button (click)="backToCategoryList()" routerLinkActive="router-link-active" class="btn btn-purple">Back
+                to List</button>
+        </div>
+        <form #categoryForm="ngForm" (ngSubmit)="submitForm(categoryForm)" novalidate class="w-100">
+            <div class=" mt-2 d-flex justify-content-center align-items-center flex-column w-100">
+                <div class="d-flex flex-column w-50">
+                    <div class="mb-3 ">
+                        <label for="categoryName" class="form-label">Name :</label>
+                        <input type="text" name="categoryName" [(ngModel)]="category.categoryName"
+                            #categoryName="ngModel" class="form-control"
+                            [ngClass]="{ 'is-invalid': isSubmit && categoryName.invalid }" id="categoryName"
+                            placeholder="Enter category Name" required>
+                        <div *ngIf="isSubmit && categoryName.invalid" class="invalid-feedback">
+                            <div *ngIf="categoryName.errors?.['required']">Name is required</div>
+                        </div>
+                    </div>
+                    <div class="mb-3 ">
+                        <label for="description" class="form-label">Description :</label>
+                        <textarea style="min-height: 100px;" name="description" [(ngModel)]="category.description"
+                            #description="ngModel" class="form-control"
+                            [ngClass]="{ 'is-invalid': isSubmit && description.invalid }" id="description"
+                            placeholder="Enter description" required></textarea>
+                        <div *ngIf="isSubmit && description.invalid" class="invalid-feedback">
+                            <div *ngIf="description.errors?.['required']">Mobile no. is required</div>
+                        </div>
+                    </div>
+                    <div class="mt-2 d-flex gap-2 justify-content-end">
+                        <button type="submit" class="btn d-flex btn-purple">Submit</button>
+                        <button type="reset" class="btn d-flex btn-outline-purple">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

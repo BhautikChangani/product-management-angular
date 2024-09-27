@@ -1,58 +1,66 @@
 .text-purple {
-    color: purple;
+  color: purple !important;
 }
 
 .bg-purple {
-    background-color: purple;
+  background-color: purple;
 }
 
 .btn-purple {
-    background-color: purple;
-    color: white;
+  background-color: purple !important;
+  color: white !important;
 }
 
 .btn-outline-purple {
-    color: purple;
-    border-color: purple;
+  color: purple;
+  border-color: purple;
 }
 
 .btn-outline-purple :hover {
-    background-color: purple;
-    color: white;
+  background-color: purple;
+  color: white;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 .cdk-overlay-pane {
-    background-color: transparent;
+  background-color: transparent;
 }
 
-  .mdc-snackbar {
-    position: absolute;
-    top: 50px;
-    right: 40px;
-  }
+.mdc-snackbar {
+  position: absolute;
+  top: 50px;
+  right: 40px;
+}
 
-  .snack-bar-success {
-    background-color: #4caf50; 
-    color: white;
-  }
-  
-  .snack-bar-error {
-    background-color: #f44336; 
-    color: white;
-  }
-  
-  .snack-bar-info {
-    background-color: #2196f3; 
-    color: white;
-  }
-  
-  .snack-bar-warning {
-    background-color: #ff9800; 
-    color: white;
-  }
+.snack-bar-success {
+  background-color: #4caf50;
+  color: white;
+}
 
-  .mat-mdc-snackbar-surface {
-    background-color: transparent !important;
-  }
+.snack-bar-error {
+  background-color: #f44336;
+  color: white;
+}
+
+.snack-bar-info {
+  background-color: #2196f3;
+  color: white;
+}
+
+.snack-bar-warning {
+  background-color: #ff9800;
+  color: white;
+}
+
+.mat-mdc-snackbar-surface {
+  background-color: transparent !important;
+}

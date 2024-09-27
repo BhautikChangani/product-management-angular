@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { AuthApiService } from '../auth/auth-api.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../auth/services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -8,19 +8,36 @@ import { Router } from '@angular/router';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-  name : string | null = null;
-  isLoggedIn : boolean = false;
-  constructor(private service : AuthApiService, private router : Router){}
+  name: string | null = null;
+  isLoggedIn: boolean = false;
+  isProductRoute: boolean = true;
+  isCategoryRoute: boolean = false;
+  constructor(private service: AuthService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.service.token.subscribe(token => {
       this.isLoggedIn = !!token;
-      if(token)
-      this.name = this.service.GetName(token);
+      if (token)
+        this.name = this.service.GetName(token);
     });
+
   }
 
-  Logout(){
+  navigateToProduct() : void {
+    this.router.navigate(['../product']);
+    this.isProductRoute = true;
+  }
+
+  navigateToCategory() : void {
+    this.router.navigate(['../category']);
+    this.isCategoryRoute = true;
+  }
+
+  navigateToBudgetCalculator() : void {
+    this.router.navigate(['budget-calculator']);
+  }
+
+  logout() : void {
     this.name = null;
     this.isLoggedIn = false;
     this.service.Logout();
