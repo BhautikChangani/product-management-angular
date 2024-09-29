@@ -30,16 +30,18 @@
             </td>
         </ng-container>
 
-        <ng-container *ngFor="let column of displayedColumns.slice(1, displayedColumns.length - 1); let i = index" [matColumnDef]="column">
+        <ng-container *ngFor="let column of displayedColumns.slice(1, displayedColumns.length - 1); let i = index"
+            [matColumnDef]="column">
             <th mat-header-cell *matHeaderCellDef> {{ column }} </th>
             <td mat-cell *matCellDef="let row">
                 <ng-container *ngIf="row.type === 'value'">
                     {{ row.values[i] }}
                 </ng-container>
                 <ng-container *ngIf="row.type === 'category'">
-                    <input type="number" class="form-control" value="{{ row.values[i] }}"
-                        [matMenuTriggerFor]="contextMenu"
-                        (contextmenu)="openMenu($event, contextMenuTrigger, row, row.values[i])">
+                    <input #categoryInput type="number" class="form-control" [(ngModel)]="row.values[i]"
+                    (ngModelChange)="updateTotals()"
+                        (contextmenu)="openMenu($event, contextMenuTrigger, row, row.values[i])"
+                        (keydown)="onKeyDown($event)">
                     <button mat-button [matMenuTriggerFor]="contextMenu" style="display:none;">Context Menu
                         Trigger</button>
                 </ng-container>
