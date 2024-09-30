@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
-import { BudgetCalculatorComponent } from './budget-calculator/budget-calculator/budget-calculator.component';
+import { BudgetcalculatorComponent } from './budget-calc/budgetcalculator/budgetcalculator.component';
 
 const routes: Routes = [
   {
@@ -10,7 +10,7 @@ const routes: Routes = [
   },
   { path: 'category', canActivate: [AuthGuard], loadChildren: () => import('../app/category/category.module').then(m => m.CategoryModule) },
   { path: 'product', canActivate: [AuthGuard], loadChildren: () => import('../app/product/product.module').then(m => m.ProductModule) },
-  { path: 'budget-calculator', component : BudgetCalculatorComponent },
+  { path: 'budget-calculator', component : BudgetcalculatorComponent },
   { path: '**', redirectTo: '/login' }
 ];
 

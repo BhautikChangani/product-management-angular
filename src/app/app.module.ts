@@ -18,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ApplyAllPopoverComponent } from './budget-calculator/apply-all-popover/apply-all-popover.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { BudgetcalculatorComponent } from './budget-calc/budgetcalculator/budgetcalculator.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { MatMenuModule } from '@angular/material/menu';
     RegisterComponent,
     LoadingSpinnerComponent,
     BudgetCalculatorComponent,
-    ApplyAllPopoverComponent
+    ApplyAllPopoverComponent,
+    BudgetcalculatorComponent
   ],
   imports: [
     BrowserModule,

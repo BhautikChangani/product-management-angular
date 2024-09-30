@@ -1,4 +1,4 @@
-import { Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 
 interface BudgetRow {
@@ -7,17 +7,19 @@ interface BudgetRow {
   placeHolder?: string;
   categoryType?: string;
   values: (string | number | null)[];
+  categories? : Category[]
 }
 
 interface Category {
-
+  name : string;
+  type : string;
 }
 @Component({
-  selector: 'app-budget-calculator',
-  templateUrl: './budget-calculator.component.html',
-  styleUrls: ['./budget-calculator.component.css']
+  selector: 'app-budgetcalculator',
+  templateUrl: './budgetcalculator.component.html',
+  styleUrl: './budgetcalculator.component.css'
 })
-export class BudgetCalculatorComponent {
+export class BudgetcalculatorComponent {
   startDate: string = '';
   endDate: string = '';
   minEndDate: string = '';
@@ -127,15 +129,15 @@ export class BudgetCalculatorComponent {
     const months : string[] = this.getMonthsBetween(new Date(this.startDate), new Date(this.endDate));
     this.displayedColumns = ['categories', ...months, 'action'];
     this.dataSource = [
-      { category: 'Income', type: 'title', values: Array(months.length).fill('') },
+      { category: 'Income', type: 'title', values: Array(months.length).fill(''), categories:[{name: 'categ1', type: 'income'}, {name: 'categ2', type: 'income'}] },
       { category: 'Input', categoryType: 'income', placeHolder: 'Enter income category', type: 'title', values: Array(months.length).fill('') },
-      { category: 'Income Total', type: 'value', values: Array(months.length).fill(0) },
-      { category: 'Expense', type: 'title', values: Array(months.length).fill('') },
-      { category: 'Input', categoryType: 'expense', placeHolder: 'Enter expense category', type: 'title', values: Array(months.length).fill('') },
-      { category: 'Expense Total', type: 'value', values: Array(months.length).fill(0) },
-      { category: 'Profit / Loss', type: 'value', values: Array(months.length).fill(0) },
-      { category: 'Opening Balance', type: 'value', values: Array(months.length).fill(0) },
-      { category: 'Closing Balance', type: 'value', values: Array(months.length).fill(0) },
+      { category: 'Income Total', type: 'total', values: Array(months.length).fill(0) },
+      { category: 'Expense', type: 'title', values: Array(months.length).fill(''), categories:[{name: 'categ1', type: 'expense'}, {name: 'categ2', type: 'expense'}]},
+      //{ category: 'Input', categoryType: 'expense', placeHolder: 'Enter expense category', type: 'title', values: Array(months.length).fill('') },
+      { category: 'Expense Total', type: 'total', values: Array(months.length).fill(0) },
+      { category: 'Profit / Loss', type: 'total', values: Array(months.length).fill(0) },
+      { category: 'Opening Balance', type: 'total', values: Array(months.length).fill(0) },
+      { category: 'Closing Balance', type: 'total', values: Array(months.length).fill(0) },
     ];
     this.updateTotals();
   }
@@ -179,12 +181,10 @@ export class BudgetCalculatorComponent {
         }
 
         const inputRowIndex: number = this.dataSource.indexOf(row);
-        this.dataSource.splice(inputRowIndex, 0, {
-          category: inputValue,
-          type: 'category',
-          categoryType: isIncome ? 'income' : 'expense',
-          values: Array(this.displayedColumns.length - 1).fill(0)
-        });
+        this.dataSource.find(x => x.category == (isIncome ? 'income' : 'expense'))?.categories?.push({
+          name : inputValue,
+          type: isIncome ? 'income' : 'expense'
+        } as Category);
 
         (event.target as HTMLInputElement).value = '';
         this.dataSource = [...this.dataSource];
@@ -257,7 +257,5 @@ export class BudgetCalculatorComponent {
     this.updateTotals();
   }
 
+
 }
-
-
-

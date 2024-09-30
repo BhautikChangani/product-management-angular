@@ -11,3 +11,8 @@
     position: relative;
     height: 100vh; 
 }
+
+.popover-btn {
+    background-color: purple !important;
+    color: white !important;
+}

@@ -1,6 +1,7 @@
 <div class="bg-purple text-white p-3 d-flex justify-content-between">
     <div class="d-flex gap-4 align-items-center">
-        <span class="nav-heading">Product management system</span>
+        <span class="nav-heading"><a (click)="navigateToProduct()" class="text-white text-decoration-none"
+            routerLinkActive="router-link-active ">Product management system</a></span>
         <span *ngIf="isLoggedIn"><a (click)="navigateToProduct()" class="text-white text-decoration-none"
                 routerLinkActive="router-link-active ">Product</a></span>
         <span *ngIf="isLoggedIn"><a (click)="navigateToCategory()" class="text-white text-decoration-none"

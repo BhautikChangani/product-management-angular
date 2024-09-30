@@ -16,9 +16,10 @@ export class NavbarComponent {
 
   ngOnInit(): void {
     this.service.token.subscribe(token => {
-      this.isLoggedIn = !!token;
-      if (token)
+      if (token && this.service.IsValidToken(token)){
+        this.isLoggedIn = !!token;
         this.name = this.service.GetName(token);
+      }
     });
 
   }

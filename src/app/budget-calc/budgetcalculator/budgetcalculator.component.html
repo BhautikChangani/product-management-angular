@@ -14,19 +14,20 @@
     
 
     <table *ngIf="isSubmit" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
         <ng-container matColumnDef="categories">
-            <th mat-header-cell *matHeaderCellDef class="fw-bold"> Categories </th>
-            <td mat-cell *matCellDef="let row" class="fw-bold">
-                <ng-container *ngIf="row.category === 'Input'; else dataContent">
-                    <input class="form-control" placeholder="{{row.placeHolder}}" (keyup)="onCategoryInput(row, $event)"
-                        (keydown)="onKeyDown($event)" />
-                </ng-container>
-                <ng-template #dataContent class="fw-bold">
+        <th mat-header-cell *matHeaderCellDef class="fw-bold"> Categories </th>
+        <ng-container  *ngFor="let row of dataSource; let i = index"
+        [matColumnDef]="row.category" matColumnDef="let row">
+            <td mat-cell class="fw-bold">
+                <ng-template class="fw-bold">
                     {{ row.category }}
                 </ng-template>
             </td>
+            <td mat-cell *ngFor="let category of row.categories">
+                {{category.name}}
+            </td>
         </ng-container>
+    </ng-container>
 
         <ng-container *ngFor="let column of displayedColumns.slice(1, displayedColumns.length - 1); let i = index"
             [matColumnDef]="column">
