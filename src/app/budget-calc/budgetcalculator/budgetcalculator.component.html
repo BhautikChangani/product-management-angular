@@ -2,8 +2,7 @@
     <h2 class="text-center mb-4">BUDGET CALCULATOR</h2>
     <div class="d-flex justify-content-center gap-2 align-items-center mb-4">
         <div>From:</div>
-        <input matInput type="date" [(ngModel)]="startDate" (change)="onStartDateChange()"
-            class="form-control w-auto" />
+        <input matInput type="date" [(ngModel)]="startDate" (change)="onStartDateChange()" class="form-control w-auto" />
         <div>To:</div>
         <input matInput type="date" [(ngModel)]="endDate" [min]="minEndDate" class="form-control w-auto" />
         <button mat-raised-button color="primary" (click)="submitDates()">Submit</button>
@@ -11,53 +10,16 @@
     </div>
     <span class="text-danger" *ngIf="errorMessage">{{ errorMessage }}</span>
 
-    
-
-    <table *ngIf="isSubmit" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-        <ng-container matColumnDef="categories">
-        <th mat-header-cell *matHeaderCellDef class="fw-bold"> Categories </th>
-        <ng-container  *ngFor="let row of dataSource; let i = index"
-        [matColumnDef]="row.category" matColumnDef="let row">
-            <td mat-cell class="fw-bold">
-                <ng-template class="fw-bold">
-                    {{ row.category }}
-                </ng-template>
-            </td>
-            <td mat-cell *ngFor="let category of row.categories">
-                {{category.name}}
-            </td>
+    <table *ngIf="isSubmit" mat-table class="mat-elevation-z8">
+       
+        <ng-container *ngFor="let item of displayedColumns" [matColumnDef]="item">
+            <th mat-header-cell *matHeaderCellDef> {{ item }} </th>
         </ng-container>
-    </ng-container>
-
-        <ng-container *ngFor="let column of displayedColumns.slice(1, displayedColumns.length - 1); let i = index"
-            [matColumnDef]="column">
-            <th mat-header-cell *matHeaderCellDef class="fw-bold"> {{ column }} </th>
-            <td mat-cell *matCellDef="let row">
-                <ng-container *ngIf="row.type === 'value'">
-                    {{ row.values[i] }}
-                </ng-container>
-                <ng-container *ngIf="row.type === 'category'">
-                    <input #categoryInput type="number" class="form-control" [(ngModel)]="row.values[i]"
-                    (ngModelChange)="updateTotals()"
-                        (contextmenu)="openMenu($event, contextMenuTrigger, row, row.values[i])">
-                    <button mat-button [matMenuTriggerFor]="contextMenu" style="display:none;">Context Menu
-                        Trigger</button>
-                </ng-container>
-                <mat-menu #contextMenu="matMenu" class="p-2">
-                    <button class="btn popover-btn" mat-menu-item (click)="applyAll()">Apply All</button>
-                </mat-menu>
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef class="fw-bold"> Action </th>
-            <td mat-cell *matCellDef="let row">
-                <button mat-icon-button (click)="deleteCategory(row)" *ngIf="row.type === 'category'">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </td>
-        </ng-container>
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <ng-container *ngFor="let item of dataSource" [matColumnDef]="item.category">
+            <td mat-header-cell *matHeaderCellDef> {{ item.category }} </td>
+        </ng-container>
+        <tr mat-row *matRowDef="dataSource; columns: displayedColumns;"></tr>
     </table>
+    
 </div>
