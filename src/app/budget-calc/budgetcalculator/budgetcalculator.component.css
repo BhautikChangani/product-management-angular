@@ -1,0 +1,18 @@
+.category-title {
+    height: 52px !important;
+    font-size: 16px;
+}
+
+.child-table {
+    box-shadow: none !important;
+}
+
+.symbol {
+    position: absolute;
+    top: 15px;
+    width: auto;
+}
+
+.symbol-col {
+    padding: 11px;
+}

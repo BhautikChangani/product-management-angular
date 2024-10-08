@@ -44,6 +44,8 @@ export class BudgetcalculatorComponent {
   incomeCategory: Category[] = [];
   expenseCategory: Category[] = [];
   lastAddedInnerCategoryIndex: number | null = null;
+  pressedKeys: Set<string> = new Set();
+  isControlPressed : boolean = false;
 
   @ViewChild(MatMenuTrigger) contextMenuTrigger!: MatMenuTrigger;
   @ViewChildren('categoryInput') inputRefs!: QueryList<ElementRef>;
@@ -129,7 +131,7 @@ export class BudgetcalculatorComponent {
 
   updateTable(): void {
     const months: string[] = this.getMonthsBetween(new Date(this.startDate), new Date(this.endDate));
-    this.displayedColumns = ['categories', ...months, 'action'];
+    this.displayedColumns = ['symbol','categories', ...months, 'action'];
     this.displayedColumns1 = ['categories', ...months];
     this.dataSource = [
       { category: 'Income', type: 'title', values: Array(months.length).fill(''), isParentRow: true, categories: [], isOpen: true },
@@ -208,17 +210,17 @@ export class BudgetcalculatorComponent {
         ];
         (event.target as HTMLInputElement).value = '';
         const categoryCount = this.dataSource.find(x => x.category == (isIncome ? 'Income' : 'Expense'))!.categories?.length || 0;
-      const focusIndex = (categoryCount - 1) * (this.displayedColumns.length - 2);
+      const focusIndex = (categoryCount - 1) * (this.displayedColumns.length - 3);
 
-      // Find the correct table for focusing
       setTimeout(() => {
         setTimeout(() => {
           const categoryRow = this.dataSource.find(x => x.category === (isIncome ? 'Income' : 'Expense'));
           const rowIndex = this.dataSource.indexOf(categoryRow!);
-          const newRow: HTMLTableRowElement = document.querySelectorAll('tr')[rowIndex + categoryCount + 1];
+          const rows = document.querySelectorAll('.parentRow');
+          const newRow = rows[isIncome ? 0 : 3]
 
           if (newRow) {
-            const inputField: Element | null = newRow.querySelector('input[type="number"]');
+            const inputField: Element | null = newRow.querySelectorAll('input[type="number"]')[focusIndex];
             if (inputField instanceof HTMLInputElement) {
               inputField.focus();
             }
@@ -231,8 +233,51 @@ export class BudgetcalculatorComponent {
     }
   }
 
+  onKeyUp(event : KeyboardEvent){
+    if(!event.ctrlKey){
+      this.isControlPressed = false;
+      this.pressedKeys.clear();
+    } else if(this.isControlPressed){
+      this.pressedKeys.add('Control');
+    }
+    this.pressedKeys.delete(event.key);
+  }
+
+  onCtrlEnter(event : KeyboardEvent, index : number, category : Category){
+    this.pressedKeys.add(event.key);
+    if(event.ctrlKey){
+      this.isControlPressed = true;
+      this.pressedKeys.add('Control');
+    }
+    if(event.ctrlKey && event.key === 'Enter'){
+      if(this.pressedKeys.size == 2 && this.isControlPressed){
+        this.focusInput(category,'forward', index);
+      }
+    }
+    if(event.shiftKey && event.ctrlKey && event.key === 'Enter'){
+      if(this.pressedKeys.size == 3){
+        this.focusInput(category,'back', index);
+      }
+    }
+  }
+
+  focusInput( category : Category, direction : string, index : number){
+    const isIncome = category.type == 'Income' ? true : false;
+    const rowIndex = this.dataSource.find(x => x.category === (isIncome ? 'Income' : 'Expense'))?.categories?.indexOf(category);
+    const rows = document.querySelectorAll('.parentRow');
+    const focusIndex = (Number(rowIndex) + (direction === 'forward' ? 1 : (-1))) * (this.displayedColumns.length - 3);
+    const newRow = rows[isIncome ? 0 : 3]
+    if (newRow) {
+      const inputField: Element | null = newRow.querySelectorAll('input[type="number"]')[focusIndex];
+      if (inputField instanceof HTMLInputElement) {
+        inputField.focus();
+      }
+    }
+  }
+
   onKeyDown(event: KeyboardEvent): void {
-    if (event.key === 'Tab') {
+    const inputValue = (event.target as HTMLInputElement).value.trim();
+    if (event.key === 'Tab' && inputValue) {
       event.preventDefault();
     }
   }

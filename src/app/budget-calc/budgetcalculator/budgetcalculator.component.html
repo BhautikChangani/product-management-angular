@@ -14,39 +14,51 @@
 
 
     <table *ngIf="isSubmit" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
+        <ng-container matColumnDef="symbol">
+            <th mat-header-cell *matHeaderCellDef class="fw-bold"></th>
+            <td mat-cell *matCellDef="let row" class="position-relative symbol-col" >
+                <span class="symbol" (click)="row.isParentRow ? openCategory(row.category) : '';">
+                    <ng-container *ngIf="row.isParentRow">
+                        <mat-icon>
+                            {{ row.isOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
+                          </mat-icon>
+                    </ng-container>
+                </span>
+                </td>
+        </ng-container>
         <ng-container matColumnDef="categories">
             <th mat-header-cell *matHeaderCellDef class="fw-bold"> Categories </th>
             <td mat-cell [attr.colspan]="(row.isParentRow || row.isInputRow) ? displayedColumns.length : 1" *matCellDef="let row"
-                 class="fw-bold">
+                 class="fw-bolder">
                 <ng-container *ngIf="row.category === 'Input'; else dataContent">
                     <input class="form-control" placeholder="{{row.placeHolder}}" (keyup)="onCategoryInput(row, $event)"
                         (keydown)="onKeyDown($event)" width="188px" />
                 </ng-container>
-                <ng-template #dataContent class="fw-bold">
-                    <span (click)="row.isParentRow ? openCategory(row.category) : '';" class="d-flex align-items-center justify-content-start">
-                    {{ row.category }} <mat-icon *ngIf="row.isParentRow">
-                        {{ row.isOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
-                      </mat-icon>
+                <ng-template #dataContent class="fw-light">
+                    <span  class="d-flex align-items-center justify-content-start category-title">
+                         {{ row.category }} 
                     </span>
                 </ng-template>
                 <ng-container *ngIf="row.isOpen">
-                    <table mat-table *ngIf="row.categories.length > 0" [dataSource]="row.categories" class="mat-elevation-z8">
+                    <table mat-table *ngIf="row.categories.length > 0" [dataSource]="row.categories" class="mat-elevation-z8 child-table">
+                       
                         <ng-container matColumnDef="categories">
                             <th mat-header-cell *matHeaderCellDef class="fw-bold d-none"> Category </th>
-                            <td mat-cell *matCellDef="let category" class="fw-bold">
+                            <td mat-cell *matCellDef="let category" class="fw-bold ">
                                 <ng-container class="fw-bold">
                                     {{ category.name }}
                                 </ng-container>
                             </td>
                         </ng-container>
                         <ng-container
-                            *ngFor="let column of displayedColumns.slice(1, displayedColumns.length - 1); let i = index"
+                            *ngFor="let column of displayedColumns.slice(2, displayedColumns.length - 1); let i = index"
                             [matColumnDef]="column">
                             <th mat-header-cell *matHeaderCellDef class="fw-bold d-none"> {{ column }} </th>
                             <td mat-cell *matCellDef="let category">
                                 <ng-container>
                                     <input #categoryInput type="number" class="form-control"
+                                        (keydown)="onCtrlEnter($event, i, category)"
+                                        (keyup)="onKeyUp($event)"
                                         [(ngModel)]="category.values[i]" (ngModelChange)="updateTotals()"
                                         (contextmenu)="openMenu($event, contextMenuTrigger, category, category.values[i])">
                                     <button mat-button [matMenuTriggerFor]="contextMenu" style="display:none;">Context
@@ -67,7 +79,7 @@
                                 </button>
                             </td>
                         </ng-container>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns.slice(1, displayedColumns.length);"></tr>
                     </table>
                 </ng-container>
 
@@ -90,9 +102,13 @@
         </ng-container>
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef class="fw-bold"> Action </th>
+            <ng-container *matCellDef="let row">
+
+                <td mat-cell *ngIf="row.type == 'value'"></td>
+            </ng-container>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="parentRow"></tr>
     </table>
 </div>
